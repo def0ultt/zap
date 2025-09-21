@@ -1,67 +1,69 @@
+# Manipulate & Extract Parameters – **zap**
 
-# ParamFuzz
-
-**ZAP**  is a small and fast command-line tool to short, replace and  append values to URL parameters. Perfect for bug bounty hunters, penetration testers, and security researchers.  
-
----
-
-## Features
-
-- Replace all URL parameter values with a custom string (default: `FUZZ`)  
-- Replace only the **first** (`-s`) or **last** (`-f`) parameter value  
-- Append a string to parameters instead of replacing (`-a`)  
-- Safe for any input, including special characters like `/`, `<`, `>`, `&`  
-- Sort all parameters alphabetically in the output  
-- Remove duplicate URLs automatically  
-- Remove all URLs that do not contain any parameters  
-- Simple, short, and fast — perfect for pipelines and fuzzing lists  
-
+**zap** is a small and fast command-line tool to replace, append, list, or extract URL parameter names and values. Perfect for bug bounty hunters, penetration testers, and security researchers.
 
 ---
 
-## Installation
+### Features
+
+* Replace all URL parameter values with a custom string (default: `FUZZ`)
+* Replace only the first (`-s`) or last (`-f`) parameter value
+* Append a string to parameters instead of replacing (`-a`)
+* **Extract all parameter names from URLs (`-e`)**
+* Safe for any input, including special characters like `/`, `<`, `>`, `&`
+* Sort all parameters alphabetically in the output
+* Remove duplicate URLs automatically
+* Remove all URLs that do not contain any parameters
+* Simple, short, and fast — perfect for pipelines and fuzzing lists
+
+---
+
+### Installation
 
 ```bash
-git clone https://github.com/yourusername/paramfuzz.git
-cd paramfuzz
-chmod +x zap   # or your script name
-````
+git clone https://github.com/def0ultt/zap
+chmod +x zap   
+```
 
 No additional dependencies required (Bash + standard utilities).
 
 ---
 
-## Usage
+### Usage
 
 ```bash
 cat urls.txt | ./zap [FUZZ_WORD] [OPTIONS]
 ```
 
+---
+
 ### Options
 
-| Flag        | Description                                                             |
-| ----------- | ----------------------------------------------------------------------- |
-| `-f`        | Replace **only the last** parameter value                               |
-| `-s`        | Replace **only the first** parameter value                              |
-| `-a`        | Append FUZZ\_WORD to parameter values instead of replacing              |
-| `-h`        | Show help menu                                                          |
-| `FUZZ_WORD` | Optional. Default: `FUZZ`. Can be any string including HTML/JS payloads |
+| Flag | Description                                                |
+| ---- | ---------------------------------------------------------- |
+| `-f` | Replace only the last parameter value                      |
+| `-s` | Replace only the first parameter value                     |
+| `-a` | Append FUZZ\_WORD to parameter values instead of replacing |
+| `-e` | **Extract all parameter names from URLs**                  |
+| `-h` | Show help menu                                             |
+
+**FUZZ\_WORD** Optional. Default: `FUZZ`. Can be any string including HTML/JS payloads.
 
 ---
 
-## Examples
+### Examples
 
 Assume `urls.txt` contains:
 
 ```
-https://example.com/test.js
-https://example.com/test2.css
 https://example.com/?id=123&next=home
 https://testsite.com/search?q=admin
 https://vuln.com/page?post=5
 ```
 
-**Replace all parameter values with `FUZZ` (default):**
+---
+
+**Replace all parameter values with FUZZ (default):**
 
 ```bash
 cat urls.txt | ./zap
@@ -75,7 +77,9 @@ https://testsite.com/search?q=FUZZ
 https://vuln.com/page?post=FUZZ
 ```
 
-**Replace all parameters with a custom word (`TEST`):**
+---
+
+**Replace all parameters with a custom word (TEST):**
 
 ```bash
 cat urls.txt | ./zap TEST
@@ -89,7 +93,9 @@ https://testsite.com/search?q=TEST
 https://vuln.com/page?post=TEST
 ```
 
-**Append `FUZZ` to all parameter values:**
+---
+
+**Append FUZZ to all parameter values (`-a`):**
 
 ```bash
 cat urls.txt | ./zap -a
@@ -103,7 +109,9 @@ https://testsite.com/search?q=adminFUZZ
 https://vuln.com/page?post=5FUZZ
 ```
 
-**Append `FUZZ` only to the first parameter value:**
+---
+
+**Append FUZZ only to the first parameter value (`-s -a`):**
 
 ```bash
 cat urls.txt | ./zap -s -a
@@ -117,7 +125,9 @@ https://testsite.com/search?q=adminFUZZ
 https://vuln.com/page?post=5FUZZ
 ```
 
-**Replace only the last parameter value:**
+---
+
+**Replace only the last parameter value (`-f`):**
 
 ```bash
 cat urls.txt | ./zap -f
@@ -131,18 +141,22 @@ https://testsite.com/search?q=FUZZ
 https://vuln.com/page?post=FUZZ
 ```
 
-**Use a JS payload safely:**
+---
+
+**Extract only parameter names (`-e`):**
 
 ```bash
-cat urls.txt | ./zap "><script>alert(5)</script>" -a
+cat urls.txt | ./zap -e
 ```
 
 Output:
 
 ```
-https://example.com/?id=123><script>alert(5)</script>&next=home><script>alert(5)</script>
-https://testsite.com/search?q=admin><script>alert(5)</script>
-https://vuln.com/page?post=5><script>alert(5)</script>
+id
+next
+q
+post
 ```
+
 
 
