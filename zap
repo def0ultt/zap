@@ -44,7 +44,8 @@ ESCAPED_FUZZ=$(printf '%s\n' "$FUZZ_WORD" | sed -e 's/[\/&]/\\&/g')
 # Read URLs from stdin
 while IFS= read -r line; do
   if $EXTRACT_PARAMS; then
-    if [[ "$line" == *"="* ]]; then
+    # extract only from URLs containing ? and =
+    if [[ "$line" == *"?"* && "$line" == *"="* ]]; then
       QUERY="${line#*\?}"
       for param in ${QUERY//&/ }; do
         echo "${param%%=*}"
@@ -55,20 +56,20 @@ while IFS= read -r line; do
       if $CHANGE_LAST || $CHANGE_FIRST; then
         IFS='&' read -ra PARAMS <<< "${line#*\?}"
         BASE="${line%%\?*}"
-        
+
         if $CHANGE_LAST; then
           INDEX=$((${#PARAMS[@]}-1))
-        elif $CHANGE_FIRST; then
+        else
           INDEX=0
         fi
 
-        KEY=${PARAMS[$INDEX]%%=*}        
-        VALUE=${PARAMS[$INDEX]#*=}       
+        KEY=${PARAMS[$INDEX]%%=*}
+        VALUE=${PARAMS[$INDEX]#*=}
 
         if $APPEND_MODE; then
-          PARAMS[$INDEX]="$KEY=${VALUE}${ESCAPED_FUZZ}"  
+          PARAMS[$INDEX]="$KEY=${VALUE}${ESCAPED_FUZZ}" 
         else
-          PARAMS[$INDEX]="$KEY=${ESCAPED_FUZZ}"            
+          PARAMS[$INDEX]="$KEY=${ESCAPED_FUZZ}"
         fi
 
         echo "$BASE?$(IFS='&'; echo "${PARAMS[*]}")"
