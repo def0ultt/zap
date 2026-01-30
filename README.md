@@ -21,7 +21,7 @@ A powerful Bash script for URL parameter manipulation, fuzzing, and extraction. 
 ## Installation
 
 ```bash
-git clone [https://github.com/yourusername/zap.git](https://github.com/def0ultt/zap.git)
+git clone https://github.com/def0ultt/zap.git
 cd zap
 chmod +x zap
 sudo ln -s $(pwd)/zap /usr/local/bin/zap
